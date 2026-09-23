@@ -1,0 +1,378 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "292a763c998f2c9aa3e164a0d4d35530",
+    "entities": [
+      {
+        "tableName": "vehicles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nickname` TEXT, `make` TEXT NOT NULL, `model` TEXT NOT NULL, `year` INTEGER, `powertrain` TEXT NOT NULL, `transmission` TEXT NOT NULL, `current_mileage` INTEGER NOT NULL, `mileage_unit` TEXT NOT NULL, `photo_uri` TEXT, `currency_code` TEXT, `created_at_epoch_ms` INTEGER NOT NULL, `updated_at_epoch_ms` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nickname",
+            "columnName": "nickname",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "make",
+            "columnName": "make",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "powertrain",
+            "columnName": "powertrain",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmission",
+            "columnName": "transmission",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentMileage",
+            "columnName": "current_mileage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mileageUnit",
+            "columnName": "mileage_unit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photoUri",
+            "columnName": "photo_uri",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "currencyCode",
+            "columnName": "currency_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAtEpochMs",
+            "columnName": "created_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAtEpochMs",
+            "columnName": "updated_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "service_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vehicle_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `catalog_key` TEXT, `interval_distance` INTEGER NOT NULL, `interval_months` INTEGER, `last_done_mileage` INTEGER, `last_done_at_epoch_day` INTEGER, `sort_order` INTEGER NOT NULL, `created_at_epoch_ms` INTEGER NOT NULL, FOREIGN KEY(`vehicle_id`) REFERENCES `vehicles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vehicleId",
+            "columnName": "vehicle_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catalogKey",
+            "columnName": "catalog_key",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "intervalDistance",
+            "columnName": "interval_distance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "intervalMonths",
+            "columnName": "interval_months",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastDoneMileage",
+            "columnName": "last_done_mileage",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastDoneAtEpochDay",
+            "columnName": "last_done_at_epoch_day",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sort_order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtEpochMs",
+            "columnName": "created_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_service_items_vehicle_id",
+            "unique": false,
+            "columnNames": [
+              "vehicle_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_items_vehicle_id` ON `${TABLE_NAME}` (`vehicle_id`)"
+          },
+          {
+            "name": "index_service_items_vehicle_id_name",
+            "unique": true,
+            "columnNames": [
+              "vehicle_id",
+              "name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_service_items_vehicle_id_name` ON `${TABLE_NAME}` (`vehicle_id`, `name`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vehicles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vehicle_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "service_visits",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vehicle_id` INTEGER NOT NULL, `mileage` INTEGER NOT NULL, `performed_at_epoch_day` INTEGER NOT NULL, `cost_minor` INTEGER, `workshop` TEXT, `notes` TEXT, `receipt_uri` TEXT, `created_at_epoch_ms` INTEGER NOT NULL, FOREIGN KEY(`vehicle_id`) REFERENCES `vehicles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vehicleId",
+            "columnName": "vehicle_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mileage",
+            "columnName": "mileage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "performedAtEpochDay",
+            "columnName": "performed_at_epoch_day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "costMinor",
+            "columnName": "cost_minor",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "workshop",
+            "columnName": "workshop",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "receiptUri",
+            "columnName": "receipt_uri",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAtEpochMs",
+            "columnName": "created_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_service_visits_vehicle_id",
+            "unique": false,
+            "columnNames": [
+              "vehicle_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_visits_vehicle_id` ON `${TABLE_NAME}` (`vehicle_id`)"
+          },
+          {
+            "name": "index_service_visits_vehicle_id_performed_at_epoch_day",
+            "unique": false,
+            "columnNames": [
+              "vehicle_id",
+              "performed_at_epoch_day"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_visits_vehicle_id_performed_at_epoch_day` ON `${TABLE_NAME}` (`vehicle_id`, `performed_at_epoch_day`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vehicles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vehicle_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "service_visit_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`visit_id` INTEGER NOT NULL, `service_item_id` INTEGER NOT NULL, PRIMARY KEY(`visit_id`, `service_item_id`), FOREIGN KEY(`visit_id`) REFERENCES `service_visits`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`service_item_id`) REFERENCES `service_items`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "visitId",
+            "columnName": "visit_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serviceItemId",
+            "columnName": "service_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "visit_id",
+            "service_item_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_service_visit_items_visit_id",
+            "unique": false,
+            "columnNames": [
+              "visit_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_visit_items_visit_id` ON `${TABLE_NAME}` (`visit_id`)"
+          },
+          {
+            "name": "index_service_visit_items_service_item_id",
+            "unique": false,
+            "columnNames": [
+              "service_item_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_visit_items_service_item_id` ON `${TABLE_NAME}` (`service_item_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "service_visits",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "visit_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "service_items",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "service_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [
+      {
+        "viewName": "service_health",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            i.id AS service_item_id,\n            i.vehicle_id AS vehicle_id,\n            i.name AS name,\n            i.interval_distance AS interval_distance,\n            i.last_done_mileage AS last_done_mileage,\n            i.last_done_at_epoch_day AS last_done_at_epoch_day,\n            i.sort_order AS sort_order,\n            v.current_mileage AS current_mileage,\n            CASE\n                WHEN i.last_done_mileage IS NULL THEN NULL\n                ELSE (i.last_done_mileage + i.interval_distance - v.current_mileage)\n            END AS remaining_distance\n        FROM service_items AS i\n        INNER JOIN vehicles AS v ON v.id = i.vehicle_id"
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '292a763c998f2c9aa3e164a0d4d35530')"
+    ]
+  }
+}
